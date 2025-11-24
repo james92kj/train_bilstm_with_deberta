@@ -1,0 +1,7 @@
+accelerate
+torch
+tqdm
+datasets
+transformers
+kaggle
+tokenizers

@@ -61,7 +61,7 @@ for VALIDATION_FOLD in config["validation_folds"]:
             "--multi_gpu",
             "--num_processes",
             str(num_gpus),
-            "model.py",
+            "deberta-BiLSTM.py",
         ]
     else:
         # Single GPU mode (still use accelerate for future scalability)
@@ -74,9 +74,9 @@ for VALIDATION_FOLD in config["validation_folds"]:
             "1",
             "--mixed_precision",
             "fp16",
-            "model.py",
+            "deberta-BiLSTM.py",
         ]
-    
+
     # Add common arguments
     command.extend([
         "--output_dir",
@@ -116,12 +116,12 @@ for VALIDATION_FOLD in config["validation_folds"]:
     # Execute the command and redirect stdout and stderr
     log_filename = f"logs/bilstm1-fold{VALIDATION_FOLD}-fp16-{current_date}.log"
     print(f"Logging to: {log_filename}\n")
-    
+
     with open(log_filename, "w") as log_file:
         process = subprocess.Popen(
-            command, 
-            stdout=subprocess.PIPE, 
-            stderr=subprocess.STDOUT, 
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
             text=True,
             bufsize=1  # Line buffered for real-time output
         )
@@ -132,7 +132,7 @@ for VALIDATION_FOLD in config["validation_folds"]:
 
     process.stdout.close()
     exit_code = process.wait()
-    
+
     if exit_code == 0:
         print(f"\n✓ Training completed successfully for fold {VALIDATION_FOLD}")
     else:

@@ -29,10 +29,10 @@ from typing import Dict
 import string, random
 
 # Custom modules
-from src.model_bilstm import CustomModel
-from src.losses import FocalLoss, JaccardLoss
-from src.sift import AdversarialLearner, hook_sift_layer
-from src.piidd_postprocessing import label_postprocessing
+from model_bilstm import CustomModel
+from losses import FocalLoss, JaccardLoss
+from sift import AdversarialLearner, hook_sift_layer
+from piidd_postprocessing import label_postprocessing
 
 import warnings
 
@@ -566,7 +566,7 @@ def main():
             self._adv_started = False
             # self.awp = AWP(model=model,adv_eps=1e-3,adv_lr=1e-6,device=self.args.device,start_epoch=0)
 
-        def compute_loss(self, model, inputs, return_outputs=False):
+        def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
 
             #             for i in range(len(self.class_weights)):
             #                 if i == 2 or i == 8:
@@ -658,10 +658,11 @@ def main():
             metric_for_best_model="ents_f5",
             greater_is_better=True,
             gradient_checkpointing=True,
+            gradient_checkpointing_kwargs={"use_reentrant": False},
             num_train_epochs=args.num_train_epochs,
             dataloader_num_workers=torch.cuda.device_count(),
             load_best_model_at_end=True,
-            evaluation_strategy="steps",
+            eval_strategy="steps",
             eval_steps=args.save_steps,
             lr_scheduler_type="cosine",
             save_total_limit=2,
@@ -712,6 +713,7 @@ def main():
             metric_for_best_model="ents_f5",
             greater_is_better=True,
             gradient_checkpointing=True,
+            gradient_checkpointing_kwargs={"use_reentrant": False},
             num_train_epochs=args.num_train_epochs,
             dataloader_num_workers=torch.cuda.device_count(),
             load_best_model_at_end=False,
